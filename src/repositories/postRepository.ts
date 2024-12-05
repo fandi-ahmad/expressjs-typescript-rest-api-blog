@@ -1,5 +1,5 @@
-import prisma from "../lib/prisma";
-import { createPostDTO } from "../interface/createPostDTO";
+import prisma from "@/lib/prisma";
+import { createPostDTO } from "@/interface/createPostDTO";
 
 export const PostRepository = {
   async createPost({content, authorEmail}: createPostDTO) {

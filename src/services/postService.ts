@@ -1,13 +1,8 @@
-import { PostRepository } from "../repositories/postRepository";
-import { createPostDTO } from "../interface/createPostDTO";
+import { PostRepository } from "@/repositories/postRepository";
+import { createPostDTO } from "@/interface/createPostDTO";
 
 export const PostService = {
   async createPost(data: createPostDTO) {
-    // if (!data.content || !data.authorEmail) {
-    //   throw new Error("Content and author email are required! from service");
-    // }
-    
-
     return await PostRepository.createPost(data);
   },
 

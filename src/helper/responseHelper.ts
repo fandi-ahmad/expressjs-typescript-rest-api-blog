@@ -1,4 +1,4 @@
-import { ApiResponseDTO } from "../interface/apiResponseDTO";
+import { ApiResponseDTO } from "@/interface/apiResponseDTO";
 
 export const successResponse = <T>(message: string, data?: T): ApiResponseDTO<T> => {
   return {

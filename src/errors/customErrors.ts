@@ -1,4 +1,4 @@
-import { ApiResponseDTO } from "../interface/apiResponseDTO";
+import { ApiResponseDTO } from "@/interface/apiResponseDTO";
 
 export class CustomError extends Error {
   statusCode: number;

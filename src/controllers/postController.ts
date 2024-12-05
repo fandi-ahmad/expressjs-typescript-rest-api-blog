@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { PostService } from "../services/postService";
-import { createPostDTO } from "../interface/createPostDTO";
-import { successResponse, validationErrorResponse, createdDataResponse } from "../helper/responseHelper";
-import { ErrorResponseReturn } from "../errors/customErrors";
+import { PostService } from "@/services/postService";
+import { createPostDTO } from "@/interface/createPostDTO";
+import { successResponse, validationErrorResponse, createdDataResponse } from "@/helper/responseHelper";
+import { ErrorResponseReturn } from "@/errors/customErrors";
 
 export const getAllPosts = async (_req: Request, res: Response) => {
   try {
