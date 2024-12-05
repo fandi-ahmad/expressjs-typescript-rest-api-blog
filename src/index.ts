@@ -1,8 +1,10 @@
+import { register } from 'tsconfig-paths'
 import express, { Request, Response } from "express";
 import createError from "http-errors"
 import { errorHandler } from "./middlewares/errorHandler";
 import routes from "./routes/routes"
 
+register()    // <-- for import @
 const app = express()
 app.use(express.json())
 
