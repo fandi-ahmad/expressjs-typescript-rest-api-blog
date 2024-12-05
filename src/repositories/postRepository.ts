@@ -19,8 +19,11 @@ export const PostRepository = {
     return await prisma.post.findMany({ include: { author: true } });
   },
 
-  async updatePost(id: number, data: any) {
-    return await prisma.post.update({ where: { id }, data });
+  async updatePost(id: number, content: string) {
+    return await prisma.post.update({
+      where: { id },
+      data: { content }
+    });
   },
 
   async deletePost(id: number) {
