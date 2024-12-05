@@ -1,35 +1,19 @@
 import { Request, Response } from "express";
 import { PostService } from "../services/postService";
 import { createPostDTO } from "../interface/createPostDTO";
-import { successResponse, errorResponse, validationErrorResponse } from "../helper/responseHelper";
+import { successResponse, validationErrorResponse, createdDataResponse } from "../helper/responseHelper";
+import { ErrorResponseReturn } from "../errors/customErrors";
 
 export const getAllPosts = async (_req: Request, res: Response) => {
-  const posts = await PostService.getAllPosts();
-  res.status(200).json(posts);
-};
-
-export const createPost = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { content, authorEmail }: createPostDTO = req.body;
-
-    // Validasi input di controller
-    if (!content || !authorEmail) {
-      res.status(400).json(validationErrorResponse('Content and authorEmail are required!'));
-      return
-    }
-
-    // Panggil service untuk membuat post
-    const post = await PostService.createPost({ content, authorEmail });
-    res.status(201).json(successResponse('Post created successfully', post));
-  } catch (error) {
-    // Tangani error yang terjadi pada server
-    console.error(error);
-    res.status(500).json(errorResponse(500, 'Internal Server Error'));
+    const posts = await PostService.getAllPosts();
+    res.status(200).json(successResponse('ok', posts));
+  } catch (error: any) {
+    return ErrorResponseReturn(res, error)
   }
 };
 
-export const updatePost = async (req: Request, res: Response) => {
-  const { id } = req.params;
+export const createPost = async (req: Request, res: Response): Promise<void> => {
   const { content, authorEmail }: createPostDTO = req.body;
 
   if (!content || !authorEmail) {
@@ -38,54 +22,46 @@ export const updatePost = async (req: Request, res: Response) => {
   }
 
   try {
-    const updatedPost = await PostService.updatePost(Number(id), { content, authorEmail });
-    res.status(200).json(successResponse('Post updated successfully', updatedPost));
-  } catch (error) {
-    console.error(error);
-    res.status(500).json(errorResponse(500, 'Internal Server Error'));
+    const post = await PostService.createPost({ content, authorEmail });
+    res.status(201).json(createdDataResponse('Post created successfully', post));
+  } catch (error: any) {
+    return ErrorResponseReturn(res, error)
   }
 };
 
-// export const createPost = async (req: Request, res: Response) => {
-//   const { content, authorEmail }: createPostDTO = req.body;
+export const updatePost = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { content } = req.body;
 
-//   if (!content || !authorEmail) {
-//     res.status(400).json({
-//       status: 400,
-//       message: "content and authorEmail are required!",
-//     });
-//     return
-//   }
+  if (!content) {
+    res.status(400).json(validationErrorResponse('Content are required for updated!'));
+    return
+  }
 
-//   try {
-//     const post = await PostService.createPost({content, authorEmail});
-//     res.status(201).json({ message: "Post created", data: post });
-//   } catch (error) {
-//     res.status(400).json({ message: "Internal server error create post" });
-//   }
-// };
+  try {
+    const updatedPost = await PostService.updatePost(Number(id), content);
+    res.status(200).json(successResponse('Post updated successfully', updatedPost));
+  } catch (error: any) {
+    return ErrorResponseReturn(res, error)
+  }
+};
 
 export const getPostById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const post = await PostService.getPostById(Number(id));
-    res.status(200).json(post);
-  } catch (error) {
-    res.status(400).json({ message: "Internal server error" });
+    res.status(200).json(successResponse('ok', post));
+  } catch (error: any) {
+    return ErrorResponseReturn(res, error)
   }
 };
 
-// export const updatePost = async (req: Request, res: Response) => {
-//   try {
-//     const { id } = req.params
-//     const { content } = req.body
-//     const updatedPost = await PostService.getPostById(Number(id))
-//     res.status(200).json(updatedPost)
-//   } catch (error) {
-//     res.status(400).json({ message: "Internal server error" });
-//   }
-// }
-
 export const deletePost = async (req: Request, res: Response) => {
-
+  try {
+    const { id } = req.params
+    await PostService.deletePost(Number(id))
+    res.status(200).json(successResponse(`Post with ID ${id} deleted successfully`));
+  } catch (error: any) {
+    return ErrorResponseReturn(res, error)
+  }
 }
