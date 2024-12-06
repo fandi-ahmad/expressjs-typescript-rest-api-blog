@@ -16,14 +16,6 @@ export const createdDataResponse = <T>(message: string, data?: T): ApiResponseDT
   };
 };
 
-export const errorResponse = (status: number, message: string, data?: any): ApiResponseDTO => {
-  return {
-    status,
-    message,
-    data
-  };
-};
-
 export const validationErrorResponse = (message: string): ApiResponseDTO => {
   return {
     status: 400,
