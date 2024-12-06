@@ -9,7 +9,7 @@ export const PostService = {
   async getPostById(id: number) {
     const post = await PostRepository.findPostById(id);
     if (!post) {
-      throw { status: 400, message: `Post with ID ${id} is not found` }
+      throw { status: 404, message: `Post with ID ${id} is not found` }
     }
     return post;
   },
