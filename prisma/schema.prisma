@@ -18,6 +18,8 @@ model User {
   email     String  @unique
   username  String  @unique
   name      String?
+  refreshToken String?
+  password  String
   posts     Post[]
 }
 
