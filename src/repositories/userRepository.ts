@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import { UserDTO } from "@/interface/userDTO";
+import { UserDTO, UserUpdateDTO } from "@/interface/userDTO";
 
 export const UserRepository = {
   createUser: async (data: UserDTO) => {
@@ -15,14 +15,22 @@ export const UserRepository = {
   },
 
   getUserByUsername: async (username: string) => {
-    return await prisma.user.findFirst({ where: { username } })
+    return await prisma.user.findFirst({ where: { username },
+      select: { id: true, email: true, name: true, username: true }
+    })
   },
 
   getAllUsers: async () => {
-    return await prisma.user.findMany()
+    return await prisma.user.findMany({
+      select: { id: true, email: true, name: true, username: true }
+    })
   },
 
-  updateUser: async (id: number, data: UserDTO) => {
+  getUserByRefreshToken: async (refreshToken: string) => {
+    return await prisma.user.findFirst({ where: { refreshToken } })
+  },
+
+  updateUser: async (id: number, data: UserUpdateDTO) => {
     return await prisma.user.update({
       where: { id },
       data: data

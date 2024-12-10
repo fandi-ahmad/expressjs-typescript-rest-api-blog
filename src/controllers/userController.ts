@@ -1,27 +1,24 @@
 import { Request, Response } from "express";
-import prisma from "@/lib/prisma";
 import { createdDataResponse, successResponse, validationErrorResponse } from "@/helper/responseHelper";
 import { errorResponse } from "@/helper/errorResponse";
 import { UserService } from "@/services/userService";
 
-// Create a new user
 export const createUser = async (req: Request, res: Response) => {
-  const { email, username, name } = req.body
+  const { email, username, name, password } = req.body
   
-  if (!email || !username || !name) {
-    res.status(400).json(validationErrorResponse('email, username, and name are required!'));
+  if (!email || !username || !password) {
+    res.status(400).json(validationErrorResponse('email, username, and password are required!'));
     return
   }
-
+  
   try {
-    const user = await UserService.createUser({ email, username, name })
-    res.status(201).json(createdDataResponse('user created successfully', user));
+    await UserService.createUser({ email, username, name, password })
+    res.status(201).json(createdDataResponse('user created successfully'));
   } catch (error: any) {
     return errorResponse(res, error)
   }
 };
 
-// Get user by username
 export const getUserByUsername = async (req: Request, res: Response) => {
   const { username } = req.params;
   try {
@@ -45,14 +42,14 @@ export const updateUser = async (req: Request, res: Response) => {
   const { id } = req.params
   const { email, username, name } = req.body
 
-  if (!email || !username || !name) {
+  if (!email || !username || !name ) {
     res.status(400).json(validationErrorResponse('email, username, and name are required!'));
     return
   }
 
   try {
-    const user = await UserService.updateUser(Number(id), { email, username, name })
-    res.status(200).json(successResponse('ok', user))
+    await UserService.updateUser(Number(id), { email, username, name })
+    res.status(200).json(successResponse('User updated successfully'))
   } catch (error: any) {
     return errorResponse(res, error)
   }

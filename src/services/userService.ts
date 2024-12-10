@@ -1,9 +1,12 @@
-import { UserDTO } from "@/interface/userDTO"
+import { UserDTO, UserUpdateDTO } from "@/interface/userDTO"
 import { UserRepository } from "@/repositories/userRepository"
+import { BcryptPassword } from "@/utils/bcryptPassword"
 
 export const UserService = {
-  async createUser(data: UserDTO) {   
-    if (data.username.includes(' ')) {
+  async createUser(data: UserDTO) {
+    if (data.password.length < 8) {
+      throw { status: 400, message: 'The password must not be less than 8 characters' }
+    } else if (data.username.includes(' ')) {
       throw { status: 400, message: 'Username cannot contain spaces' }
     } else {
       const email = await UserRepository.getUserByEmail(data.email)
@@ -17,7 +20,13 @@ export const UserService = {
       }
   
       if (!email && !username) {
-        return await UserRepository.createUser(data)
+        const hashedPassword = await BcryptPassword.hash(data.password)
+        return await UserRepository.createUser({
+          email: data.email,
+          username: data.username,
+          password: hashedPassword,
+          name: data.name
+        })
       }
     }
   },
@@ -43,7 +52,7 @@ export const UserService = {
     return UserRepository.getAllUsers()
   },
 
-  async checkConflictEmailAndUsername(id: number, data: UserDTO) {
+  async checkConflictEmailAndUsername(id: number, data: UserUpdateDTO) {
     const existingConflict: any = await UserRepository.checkConflictEmailAndUsername(id, data.email, data.username)
     
     if (existingConflict) {
@@ -58,7 +67,7 @@ export const UserService = {
     }
   },
 
-  async updateUser(id: number, data: UserDTO) {
+  async updateUser(id: number, data: UserUpdateDTO) {
     if (data.username.includes(' ')) {
       throw { status: 400, message: 'Username cannot contain spaces' }
     } else {

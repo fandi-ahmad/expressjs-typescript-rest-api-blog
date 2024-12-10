@@ -1,12 +1,12 @@
 import { Router } from "express";
 import { getAllPosts, createPost, getPostById, updatePost, deletePost, } from "@/controllers/postController";
-
+import { verifyToken } from "@/middlewares/verifyToken";
 const router = Router();
 
 router.get("/", getAllPosts);
-router.post("/", createPost);
+router.post("/", verifyToken, createPost);
 router.get("/:id", getPostById);
-router.put("/:id", updatePost);
-router.delete("/:id", deletePost);
+router.put("/:id", verifyToken, updatePost);
+router.delete("/:id", verifyToken, deletePost);
 
 export default router;
