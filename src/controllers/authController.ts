@@ -21,3 +21,13 @@ export const loginUser = async (req: Request, res: Response) => {
     errorResponse(res, error)
   }
 }
+
+export const logoutUser = async (req: Request, res: Response) => {
+  const { id } = req.params
+  try {
+    await AuthService.deleteRefreshToken(Number(id))
+    res.status(200).json(successResponse('Logout succesfully'))
+  } catch (error: any) {
+    errorResponse(res, error)
+  }
+}
